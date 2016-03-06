@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import sys
+import argparse
+
 class Main(object):
     """
     命题: 若5, 6已经被写出, 20及以上的所有数字都可以被表示.
@@ -161,7 +164,27 @@ class CleverAgent(object):
         win = 1 - min_lose
         return write_number, win
 
+available_agents = {
+    "clever": CleverAgent,
+    "human":  HumanAgent
+}
 
 if __name__ == "__main__":
-    game = Main(CleverAgent(), CleverAgent())
+    parser = argparse.ArgumentParser("number game",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-f", "--first-hand", help="先手agent, clever/human", default="clever")
+    parser.add_argument("-l", "--last-hand", help="后手agent clever/human", default="clever")
+    args = parser.parse_args()
+
+    first_hand = available_agents.get(args.first_hand, None)
+    if first_hand is None:
+        print("No agent of type %s exists. Available types are %s." % (args.first_hand, ", ".join(available_agents.keys())))
+        sys.exit(1)
+
+    last_hand = available_agents.get(args.last_hand, None)
+    if last_hand is None:
+        print("No agent of type %s exists. Available types are %s." % (args.last_hand, ", ".join(available_agents.keys())))
+        sys.exit(1)
+
+    game = Main(first_hand(), last_hand())
     game.run()
