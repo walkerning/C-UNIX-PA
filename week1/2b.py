@@ -12,19 +12,22 @@ class MagicScales(object):
     DRAW = 0
     RIGHT = -1
 
-    def __init__(self, trial_num, ball_num):
-        self.trail_num = trial_num
-        self.ball_num = ball_num
-        self.strategy = self.find_strategy(self.trial_num, ball_num)
+    def __init__(self):
+        self.strategy = self.find_strategy()
 
     @staticmethod
-    def find_strategy(trial_num, ball_num):
+    def find_strategy():
         """
-        Find the trial strategy.
-
-        find_strategy find a strategy for detecting the evil ball
-        out of `ball_num` balls within `trial_num` trials.
+        Prepare the trial strategy.
         """
+        trials = [[1, 1, 1, 1, -1, -1, -1, -1, 0, 0, 0, 0],
+                  [1, -1, -1, 0, 1, -1, 0, 0, 1, -1, 1, 0],
+                  [-1, -1, 0, 1, -1, 0, 0, 1, 1, 1, 0, -1]]
+        judge = {}
+        for index, error_vector in enumerate(zip(*trials)):
+            judge[tuple(error_vector)] = JudgeAnswer(index=index, quality=1)
+            judge[tuple([-x for x in error_vector])] = JudgeAnswer(index=index, quality=-1)
+        return Strategy(trials=trials, judge=judge)
 
     def scale(self):
         """
@@ -49,11 +52,20 @@ class MagicScales(object):
                 answer_list.append(answer)
 
         judge_answer = self.judge_answer(tuple(answer_list))
-        print("第%d号小球比其他小球%s" % (judge_answer.index, "重" if judge_answer.quality == 1 else "轻"))
+        if judge_answer is None:
+            print("用户输入不太对\n")
+            return (-1, 0)
+        else:
+            print("第%d号小球比其他小球%s\n" % (judge_answer.index, "重" if judge_answer.quality == 1 else "轻"))
+            return (judge_answer.index, judge_answer.quality)
 
     def judge_answer(self, answer):
-        return self.strategy.judge[answer]
+        return self.strategy.judge.get(answer, None)
 
 def main():
-    magic_scales = MagicScales(3, 12)
-    magic_scales.scale()
+    magic_scales = MagicScales()
+    while True:
+        magic_scales.scale()
+
+if __name__ == "__main__":
+    main()
