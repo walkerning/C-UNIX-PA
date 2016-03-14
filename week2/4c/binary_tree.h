@@ -9,7 +9,7 @@ typedef struct _binary_tree {
 } binary_tree;
 
 // -- macros --
-#define BINARY_ROOT(x) binary_tree x;
+#define BINARY_ROOT(x) binary_tree x
 
 /**
  * tree_entry - get the struct for this entry
@@ -34,21 +34,15 @@ typedef struct _binary_tree {
 #define offsetof(type, member) \
   ((size_t) &((type *)0)->member)
 
-#define binary_tree_for_each(x, y) binary_tree_for_each_infix(x, y)
 
-/**
- *  binary_tree_for_each- Iterate over a binary tree. (infix-order)
- */
-void binary_tree_for_each_infix(binary_tree* root, void (*func)(binary_tree*));
+static inline void tree_set_left(binary_tree *root,
+                                 binary_tree *child) {
+  root -> left = child;
+}
 
-/**
- *  binary_tree_for_each_pre- Iterate over a binary tree. (pre-order)
- */
-void binary_tree_for_each_pre(binary_tree* root, void (*func)(binary_tree*));
-
-/**
- *  binary_tree_for_each_post- Iterate over a binary tree. (post-order)
- */
-void binary_tree_for_each_post(binary_tree* root, void (*func)(binary_tree*));
+static inline void tree_set_right(binary_tree *root,
+                                  binary_tree *child) {
+  root -> right = child;
+}
 
 #endif
