@@ -44,3 +44,4 @@ __pycache__/
 
 # -- test data --
 test*.data
+test*/
